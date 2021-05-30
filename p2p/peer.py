@@ -24,7 +24,6 @@ class Peer:
     def get_info(self):
         return self.peer_info.get_info()
 
-    #Client Part
     def add_client_peer_connection(self, peer_connection: ClientPeerConnection):
         self.client_peer_connections.append(peer_connection)
 
@@ -48,7 +47,6 @@ class Peer:
         for peer_connection in self.client_peer_connections:
             peer_connection.send(mssg)
 
-    #Server part
     def add_server_peer_connection(self, peer_connection: ServerPeerConnection):
         self.server_peer_connections.append(peer_connection)
 
