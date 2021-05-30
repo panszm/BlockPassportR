@@ -1,7 +1,9 @@
 import socket
-from p2p.connection_tools import serialize_str, deserialize_str
+from p2p.connection_tools import serialize_str, deserialize_str, encode_str
 import logging
 import threading
+
+SIZE_BUFFER_SIZE = 4
 
 class PeerConnection:
 
@@ -17,14 +19,20 @@ class PeerConnection:
 
     def send(self, arg:str):
         try:
-            self.socket.sendall(serialize_str(arg))
+            size, data = encode_str(arg)
+            self.socket.send(size)
+            self.socket.send(data)
         except: 
             logger = logging.getLogger(__name__)
             logger.setLevel(20)
-            logger.log("Couldn't connect to: "+self.peer_info.get_info())
+            logger.log("Couldn't connect to: "+self.get_peer_info())
 
     def receive(self):
-        data = self.socket.recv(4096)
+        data_size = self.socket.recv(SIZE_BUFFER_SIZE)
+        data_size = int.from_bytes(data_size, byteorder='big')
+        #print("data_size: "+str(data_size))
+        data = self.socket.recv(data_size)
+        #print(str(self.get_peer_info()[0]) +":"+str(self.get_peer_info()[1]) + " - data: "+str(deserialize_str(data)))
         if not data:
             return None
         return deserialize_str(data)
@@ -41,7 +49,6 @@ class ServerPeerConnection(PeerConnection):
             data = self.receive()
             if data is None:
                 break
-            self.socket.sendall(serialize_str(data))
     
     def stop_message_listening(self):
         self.listening = False
@@ -49,7 +56,7 @@ class ServerPeerConnection(PeerConnection):
 class ClientPeerConnection(PeerConnection):
 
     def make_connection(self):
-        self.socket.connect(self.peer_info)
+        self.socket.connect(self.get_peer_info())
         self.initialize_message_listening()
 
     def initialize_message_listening(self):
@@ -62,4 +69,3 @@ class ClientPeerConnection(PeerConnection):
             data = self.receive()
             if data is None:
                 break
-            self.socket.sendall(serialize_str(data))
