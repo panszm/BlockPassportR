@@ -1,5 +1,6 @@
 import hashlib
 import copy
+import pickle
 
 def hash_sha256(args):
     hash_function = hashlib.sha256()
@@ -17,3 +18,9 @@ def get_transactions_merkle_root(transactions):
             del result[index]
 
     return result[0]
+
+def serialize_obj(obj):
+    return pickle.dumps(obj)
+
+def deserialize_obj(serialized_obj):
+    return pickle.loads(serialized_obj)
