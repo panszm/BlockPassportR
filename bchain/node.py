@@ -4,7 +4,7 @@ import pickle
 
 class Node:
 
-    def __init__(self, peer_info:PeerInfo):
+    def __init__(self, peer_info:PeerInfo, node_options):
         self.chain = Chain()
         self.peer = Peer(peer_info)
 

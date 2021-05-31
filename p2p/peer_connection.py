@@ -54,7 +54,7 @@ class PeerConnection:
             command_code = int.from_bytes(command_code, byteorder='big')
             data = self.socket.recv(data_size)
             data = deserialize_obj(data)
-            
+            print(str(data))
             if not data:
                 return False
             return True

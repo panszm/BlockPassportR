@@ -11,8 +11,8 @@ peer2.start_listening()
 peer1.make_connection(peer2.get_info())
 peer2.make_connection(peer1.get_info())
 
-peer1.broadcast_message("helloFrom "+peer1.get_info()[0]+':'+str(peer1.get_info()[1]))
-peer2.broadcast_message("helloFrom "+peer2.get_info()[0]+':'+str(peer2.get_info()[1]))
+peer1.broadcast_command(1,"helloFrom "+peer1.get_info()[0]+':'+str(peer1.get_info()[1]))
+peer2.broadcast_command(1,"helloFrom "+peer2.get_info()[0]+':'+str(peer2.get_info()[1]))
 
 sleep(3)
 

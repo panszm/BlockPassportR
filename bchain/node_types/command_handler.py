@@ -6,4 +6,4 @@ class CommandHandler:
         self.node = node
 
     def handle_command(self, command_code:int, obj):
-        pass
+        print("DOIN' MY BEST 'KAY??")

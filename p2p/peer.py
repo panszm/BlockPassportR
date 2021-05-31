@@ -43,9 +43,9 @@ class Peer:
             self.client_peer_connections.append(new_peer_client_connection)
             new_peer_client_connection.make_connection()
 
-    def broadcast_message(self,mssg:str):
+    def broadcast_command(self,command_code,obj):
         for peer_connection in self.client_peer_connections:
-            peer_connection.send(mssg)
+            peer_connection.send_command(command_code, obj)
 
     def add_server_peer_connection(self, peer_connection: ServerPeerConnection):
         self.server_peer_connections.append(peer_connection)
