@@ -1,9 +1,9 @@
 from bchain.node import Node
 
-class MessageHandler:
+class CommandHandler:
 
     def __init__(self, node: Node):
         self.node = node
 
-    def handle_mssg(self, mssg:str):
+    def handle_command(self, command_code:int, obj):
         pass

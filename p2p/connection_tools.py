@@ -1,3 +1,4 @@
+import pickle
 
 def serialize_str(arg:str):
     return arg.encode()#bytearray(arg, encoding='utf-8')
@@ -14,3 +15,17 @@ def deserialize_str(arg:bytearray):
 
 def validate_peer(peer_address) -> bool:
     return True
+
+def serialize_obj(obj):
+    return pickle.dumps(obj)
+
+def deserialize_obj(serialized_obj):
+    return pickle.loads(serialized_obj)
+
+def encode_command_message(command_code, obj):
+    serialized_obj = serialize_obj(obj)
+    data_size = int(serialized_obj.__sizeof__())
+    data_size = data_size.to_bytes(4,byteorder='big')
+    command_code = command_code.to_bytes(2,byteorder='big')
+    return (data_size, command_code, serialized_obj)
+    
