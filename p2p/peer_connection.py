@@ -11,6 +11,12 @@ class PeerConnection:
         self.peer_info = peer_info
         self.socket = socket
 
+    def close(self):
+        try:
+            self.socket.close()
+        except:
+            pass
+
     def get_peer_info(self):
         return self.peer_info
 
@@ -28,15 +34,25 @@ class PeerConnection:
             logger.log("Couldn't connect to: "+self.get_peer_info())
 
     def receive(self):
-        data_size = self.socket.recv(SIZE_BUFFER_SIZE)
-        data_size = int.from_bytes(data_size, byteorder='big')
-        #print("data_size: "+str(data_size))
-        data = self.socket.recv(data_size)
-        #print(str(self.get_peer_info()[0]) +":"+str(self.get_peer_info()[1]) + " - data: "+str(deserialize_str(data)))
-        if not data:
-            return None
-        return deserialize_str(data)
+        try:
+            data_size = self.socket.recv(SIZE_BUFFER_SIZE)
+            data_size = int.from_bytes(data_size, byteorder='big')
+            #print("data_size: "+str(data_size))
+            data = self.socket.recv(data_size)
+            print(str(self.get_peer_info()[0]) +":"+str(self.get_peer_info()[1]) + " - data: "+str(deserialize_str(data)))
+            if not data:
+                return None
+            return deserialize_str(data)
+        except ConnectionAbortedError:
+            pass
+        except ConnectionResetError:
+            pass
+        except OSError:
+            pass
                                 
+    def stop_message_listening(self):
+        self.listening = False
+
 class ServerPeerConnection(PeerConnection):
 
     def initialize_message_listening(self):
@@ -49,9 +65,6 @@ class ServerPeerConnection(PeerConnection):
             data = self.receive()
             if data is None:
                 break
-    
-    def stop_message_listening(self):
-        self.listening = False
 
 class ClientPeerConnection(PeerConnection):
 
@@ -65,7 +78,11 @@ class ClientPeerConnection(PeerConnection):
         listening_thread.start()
     
     def listen_to_messages(self):
-        while self.listening:
-            data = self.receive()
-            if data is None:
-                break
+        try:
+            while self.listening:
+                data = self.receive()
+                if data is None:
+                    break
+        except (ConnectionAbortedError, ConnectionResetError):
+            pass
+        

@@ -14,7 +14,7 @@ class Node:
 
     def shutdown(self):
         self.save_bchain()
-        self.peer.stop_listening()
+        self.peer.stop()
 
     def save_bchain(self, filepath="./data/bchain_data"):
         file = open(filepath, 'wb')

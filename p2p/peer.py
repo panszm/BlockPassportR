@@ -57,26 +57,42 @@ class Peer:
 
     def stop_listening(self):
         self.server_alive = False
+        for conn in self.server_peer_connections:
+            conn.stop_message_listening()
+        for conn in self.client_peer_connections:
+            conn.stop_message_listening()
 
     def listening(self):
-        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_socket.bind(self.get_info())
-        server_socket.listen()
+        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_socket.bind(self.get_info())
+        self.server_socket.listen()
         while self.server_alive:
-            connection, address = server_socket.accept()
-            if validate_peer(address):
-                for peer_connection in self.server_peer_connections:
-                    if address == peer_connection.get_peer_info():
-                        peer_connection.stop_message_listening()
-                        peer_connection.set_socket(connection)
-                        peer_connection.initialize_message_listening()
-                        break
+            try:
+                connection, address = self.server_socket.accept()
+                if validate_peer(address):
+                    for peer_connection in self.server_peer_connections:
+                        if address == peer_connection.get_peer_info():
+                            peer_connection.stop_message_listening()
+                            peer_connection.set_socket(connection)
+                            peer_connection.initialize_message_listening()
+                            break
+                    else:
+                        new_peer_connection = ServerPeerConnection(address,connection)
+                        new_peer_connection.initialize_message_listening()
+                        self.add_server_peer_connection(new_peer_connection)
                 else:
-                    new_peer_connection = ServerPeerConnection(address,connection)
-                    new_peer_connection.initialize_message_listening()
-                    self.add_server_peer_connection(new_peer_connection)
-            else:
-                logger = logging.getLogger(__name__)
-                logger.setLevel(30)
-                logger.log("Unathorized connection attemp from: "+address)
+                    logger = logging.getLogger(__name__)
+                    logger.setLevel(30)
+                    logger.log("Unathorized connection attemp from: "+address)
+            except OSError:
+                print("Forcibly shut-down: "+str(self.get_info()))
 
+    def stop(self):
+        self.server_socket.close()
+        self.stop_listening()
+        for conn in self.client_peer_connections:
+            conn.stop_message_listening()
+            conn.close()
+        for conn in self.server_peer_connections:
+            conn.stop_message_listening()
+            conn.close()
