@@ -47,6 +47,16 @@ class Peer:
         for peer_connection in self.client_peer_connections:
             peer_connection.send_command(command_code, obj)
 
+    def send_command(self,command_code,obj,peer_info):
+        for peer_connection in self.client_peer_connections:
+            if peer_connection.get_peer_info().get_info():
+                peer_connection.send_command(command_code, obj)
+                return
+        for peer_connection in self.server_peer_connections:
+            if peer_connection.get_peer_info().get_info():
+                peer_connection.send_command(command_code, obj)
+                return
+
     def add_server_peer_connection(self, peer_connection: ServerPeerConnection):
         self.server_peer_connections.append(peer_connection)
 

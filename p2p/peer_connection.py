@@ -2,6 +2,7 @@ import socket
 from p2p.connection_tools import encode_str, encode_command, deserialize_obj
 import logging
 import threading
+from bchain.node_types.command_handler import CommandHandler
 
 SIZE_BUFFER_SIZE = 4
 CODE_BUFFER_SIZE = 2
@@ -11,6 +12,10 @@ class PeerConnection:
     def __init__(self, peer_info, socket):
         self.peer_info = peer_info
         self.socket = socket
+        self.handler = None
+
+    def attach_handler(self, handler: CommandHandler):
+        self.handler = handler
 
     def close(self):
         try:
@@ -54,6 +59,8 @@ class PeerConnection:
             command_code = int.from_bytes(command_code, byteorder='big')
             data = self.socket.recv(data_size)
             data = deserialize_obj(data)
+            if self.handler is not None:
+                self.handler.handle_command(command_code, data, self.peer_info.get_info())
             print(str(data))
             if not data:
                 return False
