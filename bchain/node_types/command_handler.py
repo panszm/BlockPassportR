@@ -28,25 +28,25 @@ class CommandHandler:
         return switch.get(command_code, None)
 
     def c_chain_length(self, obj,peer_info):
-        pass
+        self.node.c_chain_length_received(obj,peer_info)
     
     def c_chain_request(self, obj,peer_info):
-        pass
+        self.node.c_chain_requested(peer_info)
     
     def c_chain_pass(self, obj,peer_info):
-        pass
+        self.node.c_chain_received(obj)
     
     def c_block_create(self, obj,peer_info):
-        pass
+        self.node.c_new_block(obj)
     
     def c_passport_create(self, obj,peer_info):
-        pass
+        self.node.c_new_transaction(obj)
     
     def c_passport_edit(self, obj,peer_info):
-        pass
+        self.node.c_new_transaction(obj)
     
     def c_border_crossing(self, obj,peer_info):
-        pass
+        self.node.c_new_transaction(obj)
     
     def c_visa_create(self, obj,peer_info):
-        pass
+        self.node.c_new_transaction(obj)

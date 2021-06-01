@@ -16,10 +16,11 @@ class PeerInfo:
 
 class Peer:
 
-    def __init__(self, peer_info: PeerInfo):
+    def __init__(self, peer_info: PeerInfo, command_handler=None):
         self.peer_info = peer_info
         self.server_peer_connections = []
         self.client_peer_connections = []
+        self.handler = command_handler
 
     def get_info(self):
         return self.peer_info.get_info()
@@ -40,6 +41,7 @@ class Peer:
         else:
             client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             new_peer_client_connection = ClientPeerConnection(peer_info,client_socket)
+            new_peer_client_connection.attach_handler(self.handler)
             self.client_peer_connections.append(new_peer_client_connection)
             new_peer_client_connection.make_connection()
 
@@ -88,6 +90,7 @@ class Peer:
                             break
                     else:
                         new_peer_connection = ServerPeerConnection(address,connection)
+                        new_peer_connection.attach_handler(self.handler)
                         new_peer_connection.initialize_message_listening()
                         self.add_server_peer_connection(new_peer_connection)
                 else:
