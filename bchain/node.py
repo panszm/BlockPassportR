@@ -8,11 +8,15 @@ from bchain.node_types.command_handler import CommandHandler
 
 class Node:
 
-    def __init__(self, peer_info:PeerInfo, node_type:NodeType):
+    def __init__(self, peer_info:PeerInfo):#, node_type:NodeType):
         self.chain = Chain()
-        self.type = node_type
+        # self.type = node_type
         self.handler = CommandHandler(self)
         self.peer = Peer(peer_info,command_handler=self.handler)
+        self.peer.start_listening()
+    
+    def make_connection(self, peer_info: PeerInfo):
+        self.peer.make_connection(peer_info)
 
     def initialize(self):
         self.load_bchain()
@@ -23,7 +27,7 @@ class Node:
         self.peer.stop()
 
     def save_bchain(self, filepath="./data/bchain_data"):
-        file = open(filepath, 'wb')
+        file = open(filepath, 'wb+')
         pickle.dump(self.chain, file)
         file.close()
 

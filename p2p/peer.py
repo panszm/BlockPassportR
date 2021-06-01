@@ -77,6 +77,7 @@ class Peer:
     def listening(self):
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.bind(self.get_info())
+        print("NodeBindedOnPort: "+str(self.server_socket.getsockname()[1]))
         self.server_socket.listen()
         while self.server_alive:
             try:

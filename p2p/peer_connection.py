@@ -60,7 +60,7 @@ class PeerConnection:
             data = self.socket.recv(data_size)
             data = deserialize_obj(data)
             if self.handler is not None:
-                self.handler.handle_command(command_code, data, self.peer_info.get_info())
+                self.handler.handle_command(command_code, data, self.peer_info)
             print(str(data))
             if not data:
                 return False

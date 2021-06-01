@@ -1,8 +1,6 @@
-from bchain.node import Node
-
 class CommandHandler:
 
-    def __init__(self, node: Node):
+    def __init__(self, node):
         self.node = node
 
     def handle_command(self, command_code:int, obj, peer_info):
