@@ -8,15 +8,17 @@ from bchain.node_types.command_handler import CommandHandler
 
 class Node:
 
-    def __init__(self, peer_info:PeerInfo):#, node_type:NodeType):
+    def __init__(self, peer_info:PeerInfo, node_id):#, node_type:NodeType):
         self.chain = Chain()
         # self.type = node_type
         self.handler = CommandHandler(self)
         self.peer = Peer(peer_info,command_handler=self.handler)
         self.peer.start_listening()
+        self.node_id = node_id
     
     def make_connection(self, peer_info: PeerInfo):
         self.peer.make_connection(peer_info)
+        self.send_command(11,len(self.chain.blocks))
 
     def initialize(self):
         self.load_bchain()
@@ -45,11 +47,14 @@ class Node:
             self.chain.remove_last_block()
 
     def c_new_transaction(self, transaction:Transaction):
-        self.chain.register_transaction(transaction)
+        if not self.chain.is_in_chain(transaction):
+            self.chain.register_transaction(transaction)
 
     def c_chain_length_received(self, length, peer_info):
         if length > len(self.chain.blocks):
             self.peer.send_command(12, self.peer.get_info(), peer_info)
+        elif length < len(self.chain.blocks):
+            self.peer.send_command(11, len(self.chain.blocks))
 
     def c_chain_requested(self,peer_info):
         self.peer.send_command(13,self.chain,peer_info)
@@ -60,39 +65,39 @@ class Node:
 
 class GovernmentNode(Node):
 
-    def create_passport(self,passport_id, date_from, date_to, country, entity_id):
+    def create_passport(self,passport_id, date_from, date_to, country):
         if len(self.chain.blocks)>=bchain.block.MAX_TRANSACTION_COUNT:
             self.chain.add_block(bchain.block.Block(self.chain.blocks[-1].get_hash()))
             self.peer.broadcast_command(21,self.chain.blocks[-1])
-        new_passport = Transaction('p',passport_id, date_from, date_to, country, entity_id)
-        self.peer.broadcast_command(31,new_passport)
+        new_passport = Transaction('p',passport_id, date_from, date_to, country, self.node_id,self.chain.sk)
         self.chain.register_transaction(new_passport)
+        self.peer.broadcast_command(31,new_passport)
 
-    def edit_passport(self,passport_id, date_from, date_to, country, entity_id):
+    def edit_passport(self,passport_id, date_from, date_to, country):
         if len(self.chain.blocks)>=bchain.block.MAX_TRANSACTION_COUNT:
             self.chain.add_block(bchain.block.Block(self.chain.blocks[-1].get_hash()))
             self.peer.broadcast_command(21,self.chain.blocks[-1])
-        edited_passport = Transaction('r',passport_id, date_from, date_to, country, entity_id)
-        self.peer.broadcast_command(32,edited_passport)
+        edited_passport = Transaction('r',passport_id, date_from, date_to, country, self.node_id,self.chain.sk)
         self.chain.register_transaction(edited_passport)
+        self.peer.broadcast_command(32,edited_passport)
 
-    def create_visa(self,passport_id, date_from, date_to, country, entity_id):
+    def create_visa(self,passport_id, date_from, date_to, country):
         if len(self.chain.blocks)>=bchain.block.MAX_TRANSACTION_COUNT:
             self.chain.add_block(bchain.block.Block(self.chain.blocks[-1].get_hash()))
             self.peer.broadcast_command(21,self.chain.blocks[-1])
-        new_visa = Transaction('v',passport_id, date_from, date_to, country, entity_id)
-        self.peer.broadcast_command(51, new_visa)
+        new_visa = Transaction('v',passport_id, date_from, date_to, country, self.node_id,self.chain.sk)
         self.chain.register_transaction(new_visa)
+        self.peer.broadcast_command(51, new_visa)
 
 class BorderControlNode(Node):
 
-    def register_border_crossing(self,passport_id, date_from, date_to, country, entity_id):
+    def register_border_crossing(self,passport_id, date_from, date_to, country):
         if len(self.chain.blocks)>=bchain.block.MAX_TRANSACTION_COUNT:
             self.chain.add_block(bchain.block.Block(self.chain.blocks[-1].get_hash()))
             self.peer.broadcast_command(21,self.chain.blocks[-1])
-        border_crossing = Transaction('b',passport_id, date_from, date_to, country, entity_id)
-        self.peer.broadcast_command(41, border_crossing)
+        border_crossing = Transaction('b',passport_id, date_from, date_to, country, self.node_id,self.chain.sk)
         self.chain.register_transaction(border_crossing)
+        self.peer.broadcast_command(41, border_crossing)
 
 class EnforcementNode(Node):
 

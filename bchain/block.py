@@ -22,3 +22,15 @@ class Block:
             return False
         else:
             return True
+
+    def to_string(self,index):
+        output = "\tBlock nr"+str(index)
+        for transaction in self.transactions:
+            output+='\n\t\t'+transaction.to_string()
+        return output
+
+    def is_in_block(self, transaction):
+        for t in self.transactions:
+            if transaction.compare(t):
+                return True
+        return False

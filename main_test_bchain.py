@@ -6,16 +6,21 @@ from bchain.node import *
 pi1 = PeerInfo("127.0.0.1",20001)
 pi2 = PeerInfo("127.0.0.1",20002)
 
-node1 = GovernmentNode(pi1)
-node2 = GovernmentNode(pi2)
+node1 = GovernmentNode(pi1,"PL_1")
+node2 = GovernmentNode(pi2,"PL_2")
 
 sleep(2)
 
 node1.make_connection(node2.peer.get_info())
 node2.make_connection(node1.peer.get_info())
 
-node1.send_command(1,"helloFrom "+pi1.get_info()[0]+':'+str(pi1.get_info()[1]))
-node2.send_command(1,"helloFrom "+pi2.get_info()[0]+':'+str(pi2.get_info()[1]))
+
+sleep(2)
+
+node1.create_passport("RP_12213","04-12-2021","05-11-2021","rp")
+node2.create_passport("RP_12214","04-12-2021","05-11-2021","rp")
+
+print(node1.chain.to_string())
 
 sleep(2)
 
