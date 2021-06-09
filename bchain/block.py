@@ -3,7 +3,7 @@ import pytz
 from bchain.bchain_tools import *
 
 BASE_TIMEZONE = pytz.timezone('Etc/Greenwich')
-MAX_TRANSACTION_COUNT = 5
+MAX_TRANSACTION_COUNT = 5000
 
 class Block:
 
