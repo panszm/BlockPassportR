@@ -6,7 +6,7 @@ def serialize_str(arg:str):
 def encode_str(arg:str):
     serialized = serialize_str(arg)
     msg_len = int(len(serialized))
-    msg_len = msg_len.to_bytes(4,byteorder='big')
+    msg_len = msg_len.to_bytes(6,byteorder='big')
     return (msg_len,serialized)
 
 def deserialize_str(arg:bytearray):

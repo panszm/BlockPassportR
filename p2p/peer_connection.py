@@ -4,7 +4,7 @@ import logging
 import threading
 from bchain.node_types.command_handler import CommandHandler
 
-SIZE_BUFFER_SIZE = 4
+SIZE_BUFFER_SIZE = 6
 CODE_BUFFER_SIZE = 2
 
 class PeerConnection:

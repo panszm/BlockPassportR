@@ -15,8 +15,13 @@ class Chain:
         self.vk = self.sk.get_verifying_key()
 
     def add_block(self, block:Block):
-        if block.previous_hash == self.blocks[-1].hash and datetime.now(BASE_TIMEZONE).time() > block.timestamp > self.blocks[-1].timestamp:
-            self.blocks.append(block)
+        # if block.previous_hash == self.blocks[-1].get_hash() and datetime.now(BASE_TIMEZONE).time() >= block.timestamp > self.blocks[-1].timestamp:
+        self.blocks.append(block)
+
+    def add_new_block(self):
+        block = Block(self.blocks[-1].get_hash())
+        self.add_block(block)
+        return block
 
     def remove_last_block(self):
         del self.blocks[-1]
@@ -28,7 +33,7 @@ class Chain:
         return True
 
     def verify_block(self, index):
-        if index==0:
+        if index==0 or len(self.blocks)==1:
             return True
         else:
             if self.blocks[index-1].get_hash() == self.blocks[index].previous_hash and datetime.now(BASE_TIMEZONE).time() > self.blocks[index].timestamp > self.blocks[index-1]:
@@ -36,7 +41,7 @@ class Chain:
         return False
 
     def verify_last_block(self):
-        return verify_block(-1)
+        return self.verify_block(-1)
 
     def register_transaction(self, transaction):
         return self.blocks[-1].add_transaction(transaction)

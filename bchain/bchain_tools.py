@@ -3,17 +3,19 @@ import copy
 import pickle
 
 def hash_sha256(args):
+    args = str(args).encode()
     hash_function = hashlib.sha256()
-    for arg in args:
-        hash_function.update(arg)
+    hash_function.update(args)
+    # for arg in args:
+    #     hash_function.update(arg)
     return hash_function.digest()
 
 def get_transactions_merkle_root(transactions):
     result = copy.deepcopy(transactions)
     
-    while len(result>1):
+    while len(result)>1:
         for index in range(0,len(result)-len(result)%2,2):
-            result[index] = hash_sha256([result[index].to_string(), result[index+1].to_string()])
+            result[index] = hash_sha256([str(result[index]), str(result[index+1])])
         for index in range(len(result)-1-len(result)%2,-1,-2):
             del result[index]
 
