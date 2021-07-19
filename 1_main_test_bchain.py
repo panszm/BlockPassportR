@@ -1,3 +1,5 @@
+# Podstawowy test funkcjonalności blockchainu, jest to rozszerzenie testu nr 0, ponieważ węzły zamiast wiadomości tesktowych, wzajemnie przesyłają tranzakcje.
+
 from p2p.connection_tools import *
 from p2p.peer import *
 from time import sleep

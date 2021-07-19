@@ -1,3 +1,5 @@
+# Podstawowy test funkcjonalności związanych z przesyłem danych w ramach sieci peer to peer. Polega, na przesłaniu prostej wiadomości tekstowej pomiędzy węzłami.
+
 from p2p.connection_tools import *
 from p2p.peer import *
 from time import sleep
