@@ -27,7 +27,10 @@ for i in range(1,100):
 
 sleep(2)
 
+print(UrzadWojewodzki.chain.to_string())
 print(AmbasadaUS.chain.to_string())
+# print(UrzadWojewodzki.chain.to_string_of_hashes())
+# print(AmbasadaUS.chain.to_string_of_hashes())
 
 sleep(2)
 

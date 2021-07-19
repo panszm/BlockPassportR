@@ -16,16 +16,16 @@ class Chain:
         self.vk = self.sk.get_verifying_key()
 
     def add_block(self, block:Block):
-        if (block.previous_hash == self.blocks[-1].hash or len(self.blocks)<2) and datetime.now(BASE_TIMEZONE).time() >= block.timestamp >= self.blocks[-1].timestamp:
-            print("EQUAL \n\t"+self.blocks[-1].hash+"\n\t"+block.previous_hash)
-            print(self.blocks[-1].to_string(-1))
-            print(block.to_string(0))
+        if (block.previous_hash == self.blocks[-1].get_hash() or len(self.blocks)<2) and datetime.now(BASE_TIMEZONE).time() >= block.timestamp >= self.blocks[-1].timestamp:
+            # print("EQUAL \n\t"+self.blocks[-1].hash+"\n\t"+block.previous_hash)
+            # print(self.blocks[-1].to_string(-1))
+            # print(block.to_string(0))
             self.blocks.append(block)
             return True
         else:
-            print("UNEQUAL \n\t"+self.blocks[-1].hash+"\n\t"+block.previous_hash)
-            print(self.blocks[-1].to_string(-1))
-            print(block.to_string(0))
+            # print("UNEQUAL \n\t"+self.blocks[-1].hash+"\n\t"+block.previous_hash)
+            # print(self.blocks[-1].to_string(-1))
+            # print(block.to_string(0))
             return False
         # elif self.blocks[-1].is_full():
         #     self.add_new_block()
@@ -62,6 +62,12 @@ class Chain:
         output = "Chain: "
         for index, block in enumerate(self.blocks):
             output+='\n'+block.to_string(index)
+        return output
+
+    def to_string_of_hashes(self):
+        output = "Chain (hash): "
+        for index, block in enumerate(self.blocks):
+            output+='\n'+block.to_string_of_hashes(index)
         return output
 
     def is_in_chain(self,transaction):

@@ -44,8 +44,7 @@ class Node:
     def c_new_block(self, block:bchain.block.Block):
         # if not self.chain.add_block(block):
         #     self.peer.broadcast_command(12, "x")
-        if not self.chain.verify_last_block():
-            self.chain.remove_last_block()
+        self.chain.add_block(block)
 
     def c_new_transaction(self, transaction:Transaction):
         if not self.chain.is_in_chain(transaction):

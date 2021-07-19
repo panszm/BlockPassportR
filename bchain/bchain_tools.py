@@ -21,6 +21,11 @@ def get_transactions_merkle_root(transactions):
 
     return result[0]
 
+def get_transactions_hashable(transactions):
+    res = ""
+    for transaction in transactions:
+        res+=transaction.to_string()
+
 def serialize_obj(obj):
     return pickle.dumps(obj)
 

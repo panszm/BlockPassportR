@@ -13,7 +13,7 @@ class Block:
         self.timestamp = datetime.now(BASE_TIMEZONE).time()
 
     def get_hash(self):
-        self.hash = hash_sha256([self.previous_hash, get_transactions_merkle_root(self.transactions),str(self.timestamp)])
+        self.hash = hash_sha256([self.previous_hash, get_transactions_hashable(self.transactions),str(self.timestamp)]) 
         return self.hash
     
     def add_transaction(self, transaction):
@@ -29,6 +29,9 @@ class Block:
         for transaction in self.transactions:
             output+='\n\t\t'+transaction.to_string()
         return output
+
+    def to_string_of_hashes(self, index):
+        return '\tBlock nr'+str(index)+': '+self.previous_hash + '\n\t\t' + self.hash
 
     def is_in_block(self, transaction):
         for t in self.transactions:
