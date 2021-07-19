@@ -18,6 +18,7 @@ class Block:
     
     def add_transaction(self, transaction):
         self.transactions.append(transaction)
+        self.get_hash()
         if len(self.transactions) >= MAX_TRANSACTION_COUNT:
             return False
         else:
@@ -34,3 +35,6 @@ class Block:
             if transaction.compare(t):
                 return True
         return False
+
+    def is_full(self):
+        return len(self.transactions)>=MAX_TRANSACTION_COUNT

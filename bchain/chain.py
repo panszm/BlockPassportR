@@ -3,6 +3,7 @@ from datetime import datetime
 import pytz
 from bchain.transactions import Transaction
 from ecdsa import SigningKey
+import ast
 
 BASE_TIMEZONE = pytz.timezone('Etc/Greenwich')
 GENESIS_BLOCK = Block("0")
@@ -15,16 +16,27 @@ class Chain:
         self.vk = self.sk.get_verifying_key()
 
     def add_block(self, block:Block):
-        # if block.previous_hash == self.blocks[-1].get_hash() and datetime.now(BASE_TIMEZONE).time() >= block.timestamp > self.blocks[-1].timestamp:
-        self.blocks.append(block)
+        if (block.previous_hash == self.blocks[-1].hash or len(self.blocks)<2) and datetime.now(BASE_TIMEZONE).time() >= block.timestamp >= self.blocks[-1].timestamp:
+            print("EQUAL \n\t"+self.blocks[-1].hash+"\n\t"+block.previous_hash)
+            print(self.blocks[-1].to_string(-1))
+            print(block.to_string(0))
+            self.blocks.append(block)
+            return True
+        else:
+            print("UNEQUAL \n\t"+self.blocks[-1].hash+"\n\t"+block.previous_hash)
+            print(self.blocks[-1].to_string(-1))
+            print(block.to_string(0))
+            return False
+        # elif self.blocks[-1].is_full():
+        #     self.add_new_block()
 
     def add_new_block(self):
-        block = Block(self.blocks[-1].get_hash())
+        block = Block(self.blocks[-1].hash)
         self.add_block(block)
         return block
 
     def remove_last_block(self):
-        del self.blocks[-1]
+        self.blocks.pop()
 
     def verify_chain(self):
         for index in range(1,len(self.blocks)):

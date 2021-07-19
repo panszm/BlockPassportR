@@ -28,9 +28,6 @@ for i in range(1,100):
 sleep(2)
 
 print(AmbasadaUS.chain.to_string())
-print("UW ",len(UrzadWojewodzki.chain.blocks))
-print("AU ",len(AmbasadaUS.chain.blocks))
-print("PG ",len(PrzejscieGraniczne.chain.blocks))
 
 sleep(2)
 

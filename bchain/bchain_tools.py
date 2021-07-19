@@ -8,7 +8,7 @@ def hash_sha256(args):
     hash_function.update(args)
     # for arg in args:
     #     hash_function.update(arg)
-    return hash_function.digest()
+    return str(hash_function.hexdigest())
 
 def get_transactions_merkle_root(transactions):
     result = copy.deepcopy(transactions)
